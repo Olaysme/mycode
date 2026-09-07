@@ -1,0 +1,4 @@
+
+ADMIN_PASSWORD='change-me' 
+To run the app = ./mvnw clean spring-boot:run
+

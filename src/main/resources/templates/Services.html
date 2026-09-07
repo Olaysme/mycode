@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Full-stack development, design, mobile apps, SaaS platforms, and databases.">
+    <title>Services | Olayinka Solaja</title>
+    <style>
+        :root {
+            --page: #090a0c;
+            --card: #121316;
+            --line: #292a2f;
+            --text: #f3f3f4;
+            --muted: #999ca9;
+            --accent: #7585ff;
+            --icon-panel: #1d223b;
+        }
+
+        /* Basic reset and shared dark page style. */
+        * { box-sizing: border-box; }
+
+        body {
+            min-width: 320px;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text);
+            background: var(--page);
+            border-top: 1px solid var(--line);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .services {
+            width: min(100% - 170px, 1880px);
+            margin: 0 auto;
+            padding: 83px 0 90px;
+        }
+
+        .eyebrow {
+            margin: 0;
+            color: var(--accent);
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 37px 0 84px;
+            font-size: clamp(48px, 3.3vw, 61px);
+            line-height: 1.1;
+            letter-spacing: -.06em;
+        }
+
+        /* Service cards are arranged in a three-column grid on desktop. */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 29px;
+        }
+
+        .service-card {
+            min-height: 324px;
+            display: flex;
+            flex-direction: column;
+            padding: 46px 47px;
+            border: 2px solid var(--line);
+            border-radius: 22px;
+            background: var(--card);
+            transition: transform .2s ease, border-color .2s ease;
+        }
+
+        .service-card:hover { transform: translateY(-4px); border-color: #41434c; }
+
+        .service-icon {
+            width: 62px;
+            height: 62px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 32px;
+            border-radius: 15px;
+            background: var(--icon-panel);
+        }
+
+        .service-icon::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            transform: rotate(45deg);
+        }
+
+        h2 {
+            margin: 0;
+            font-size: clamp(23px, 1.5vw, 30px);
+            line-height: 1.2;
+            letter-spacing: -.045em;
+        }
+
+        .service-card p {
+            max-width: 475px;
+            margin: 24px 0 0;
+            color: var(--muted);
+            font-size: clamp(20px, 1.45vw, 26px);
+            line-height: 1.52;
+            letter-spacing: -.45px;
+        }
+
+        /* Small, consistent navigation back to the landing page. */
+        /* Header: brand on the left, navigation in the middle, action on the right. */
+        .site-header {
+            height: 131px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav-shell, .hero {
+            width: min(100% - 80px, 1828px);
+            margin: 0 auto;
+        }
+
+        .nav-shell {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
+
+        .brand { color: #fff; font-size: 28px; font-weight: 700; letter-spacing: -1.3px; }
+
+        nav { display: flex; gap: clamp(34px, 4vw, 72px); }
+
+        nav a {
+            color: var(--muted);
+            font-size: 27px;
+            letter-spacing: -.7px;
+            transition: color .2s ease;
+        }
+
+        nav a:hover { color: var(--text); }
+
+        .contact-link {
+            justify-self: end;
+            padding: 20px 33px;
+            border-radius: 12px;
+            color: #111216;
+            background: #f4f4f2;
+            font-size: 23px;
+            font-weight: 700;
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .contact-link:hover, .primary:hover { transform: translateY(-2px); }
+
+        /* The stack section is full width; its content uses a narrower reading width. */
+        .stack-section {
+            margin-top: 8px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .stack-content {
+            width: min(100% - 80px, 1464px);
+            margin: 0 auto;
+            padding: 116px 0 113px;
+        }
+
+        .stack-title {
+            margin: 32px 0 66px;
+            font-size: clamp(42px, 2.55vw, 49px);
+            line-height: 1.1;
+            letter-spacing: -.06em;
+        }
+
+        .tool-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .tool {
+            padding: 14px 23px;
+            border: 2px solid var(--line);
+            border-radius: 999px;
+            color: #c3c5cf;
+            font-size: 20px;
+            line-height: 1.2;
+            letter-spacing: -.3px;
+        }
+
+        /* Reduce the number of columns as the screen gets narrower. */
+        @media (max-width: 1100px) {
+            .services { width: min(100% - 80px, 1880px); }
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 650px) {
+            .services { width: min(100% - 40px, 1880px); padding-top: 60px; }
+            .eyebrow { font-size: 18px; }
+            h1 { margin: 26px 0 47px; font-size: 45px; }
+            .grid { grid-template-columns: 1fr; gap: 18px; }
+            .service-card { min-height: 250px; padding: 29px; border-radius: 18px; }
+            .service-icon { width: 52px; height: 52px; margin-bottom: 27px; border-radius: 13px; }
+            .service-card p { margin-top: 17px; font-size: 20px; }
+            .stack-content { width: min(100% - 40px, 1464px); padding: 74px 0; }
+            .stack-title { margin: 23px 0 38px; font-size: 39px; }
+            .tool-list { gap: 10px; }
+            .tool { padding: 11px 16px; font-size: 17px; }
+        }
+    </style>
+    <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="nav-shell">
+            <a class="brand" href="/" th:text="${site['site.name']}">Olayinka Solaja</a>
+            <nav aria-label="Primary navigation">
+                <a href="/services">Services</a>
+                <a href="/projects">Projects</a>
+                <a href="/about">About</a>
+            </nav>
+            <a class="contact-link" href="/contact">Get in touch</a>
+        </div>
+    </header>
+    <main class="services">
+        <p class="eyebrow">Services</p>
+        <h1>What I do</h1>
+
+        <section class="grid" aria-label="Services offered">
+            <article class="service-card" th:each="number : ${#numbers.sequence(1, 6)}">
+                <span class="service-icon" aria-hidden="true"></span>
+                <h2 th:text="${site['service.' + number + '.title']}">Web Development</h2>
+                <p th:text="${site['service.' + number + '.description']}">Responsive, high-performance websites and web apps.</p>
+            </article>
+        </section>
+    </main>
+    <section class="stack-section" aria-labelledby="stack-title">
+        <div class="stack-content">
+            <p class="eyebrow">Stack</p>
+            <h2 class="stack-title" id="stack-title">Tools &amp; technologies</h2>
+            <div class="tool-list" aria-label="Technologies">
+                <span class="tool" th:each="tool : ${#strings.arraySplit(site['services.stack'], ',')}" th:text="${#strings.trim(tool)}">HTML</span>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

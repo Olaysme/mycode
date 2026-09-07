@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website admin</title>
+    <style>
+        :root { --page:#090a0c; --panel:#121316; --line:#292a2f; --text:#f4f4f5; --muted:#a8aab5; --accent:#7585ff; --success:#31d28e; --danger:#ff9696; }
+        * { box-sizing:border-box; }
+        body { min-width:320px; margin:0; color:var(--text); background:var(--page); font-family:Inter,ui-sans-serif,system-ui,sans-serif; }
+        header { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; gap:20px; padding:18px max(24px,calc((100% - 1180px)/2)); border-bottom:1px solid var(--line); background:rgba(9,10,12,.96); }
+        header strong { font-size:20px; }
+        .header-actions { display:flex; align-items:center; gap:18px; }
+        a { color:var(--muted); text-decoration:none; }
+        button { border:0; font:700 15px inherit; cursor:pointer; }
+        .logout { padding:10px 14px; border:1px solid var(--line); border-radius:8px; color:var(--text); background:transparent; }
+        main { width:min(100% - 40px,1180px); margin:42px auto 90px; }
+        h1 { margin:0; font-size:clamp(36px,5vw,54px); letter-spacing:-.04em; }
+        .lead { margin:12px 0 34px; color:var(--muted); }
+        .success { padding:14px 18px; border:1px solid #246f52; border-radius:10px; color:var(--success); background:#0d251d; }
+        .error { padding:14px 18px; border:1px solid #713c3c; border-radius:10px; color:var(--danger); background:#291313; }
+        section { margin-top:24px; padding:28px; border:1px solid var(--line); border-radius:16px; background:var(--panel); }
+        h2 { margin:0 0 24px; font-size:23px; }
+        h3 { margin:28px 0 14px; color:var(--muted); font-size:15px; text-transform:uppercase; letter-spacing:.08em; }
+        .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+        .full { grid-column:1/-1; }
+        label { display:grid; gap:8px; color:var(--muted); font-size:14px; font-weight:700; }
+        input, textarea { width:100%; padding:13px 14px; border:1px solid #373940; border-radius:9px; color:var(--text); background:#0c0d10; font:16px/1.45 inherit; }
+        textarea { min-height:100px; resize:vertical; }
+        input:focus, textarea:focus { outline:2px solid var(--accent); outline-offset:1px; }
+        input[type="file"] { padding:10px; color:var(--muted); }
+        .image-field { display:grid; grid-template-columns:120px 1fr; gap:16px; align-items:center; }
+        .image-preview { width:120px; height:82px; display:block; border:1px solid var(--line); border-radius:8px; object-fit:cover; background:#0c0d10; }
+        .image-help { margin:7px 0 0; color:var(--muted); font-size:12px; font-weight:400; }
+        .image-upload-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+        .image-upload-form { padding:18px; border:1px solid var(--line); border-radius:10px; background:#0c0d10; }
+        .image-upload-form h3 { margin:0 0 14px; color:var(--text); font-size:15px; letter-spacing:0; text-transform:none; }
+        .image-upload-form .image-field { grid-template-columns:100px 1fr; }
+        .image-upload-form .image-preview { width:100px; height:76px; }
+        .upload-button { min-height:42px; margin-top:12px; padding:0 16px; border-radius:8px; color:#10121a; background:var(--accent); }
+        .save-bar { position:sticky; bottom:18px; display:flex; justify-content:flex-end; margin-top:28px; pointer-events:none; }
+        .save { min-height:56px; padding:0 30px; border-radius:11px; color:#10121a; background:var(--accent); box-shadow:0 10px 30px #000; pointer-events:auto; }
+        @media(max-width:700px) { header { padding:15px 20px; } header strong { display:none; } main { margin-top:28px; } section { padding:20px; } .grid, .image-upload-grid { grid-template-columns:1fr; } .full { grid-column:auto; } .image-field { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<header>
+    <strong>Olayinka Admin</strong>
+    <div class="header-actions">
+        <a href="/" target="_blank">View website ↗</a>
+        <form method="post" action="/admin/logout"><button class="logout" type="submit">Log out</button></form>
+    </div>
+</header>
+<main>
+    <h1>Edit website</h1>
+    <p class="lead">Update the content below, then save to publish it across the website.</p>
+    <p class="success" th:if="${success}" th:text="${success}"></p>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+
+    <section>
+        <h2>Images</h2>
+        <p class="lead">Upload images separately. Each successful upload is published immediately.</p>
+        <div class="image-upload-grid">
+            <form class="image-upload-form" method="post" action="/admin/image" enctype="multipart/form-data">
+                <h3>Homepage hero</h3>
+                <input type="hidden" name="slot" value="home.image">
+                <div class="image-field">
+                    <img class="image-preview" th:if="${!#strings.isEmpty(site['home.image'])}" th:src="${site['home.image']}" alt="Current hero image">
+                    <input name="image" type="file" accept="image/jpeg,image/png,image/gif,image/webp" required>
+                </div>
+                <button class="upload-button" type="submit">Upload image</button>
+            </form>
+            <form class="image-upload-form" method="post" action="/admin/image" enctype="multipart/form-data" th:each="number : ${projectNumbers}">
+                <h3 th:text="|Project ${number} image|">Project image</h3>
+                <input type="hidden" name="slot" th:value="|project.${number}.image|">
+                <div class="image-field">
+                    <img class="image-preview" th:if="${!#strings.isEmpty(site['project.' + number + '.image'])}" th:src="${site['project.' + number + '.image']}" alt="Current project image">
+                    <input name="image" type="file" accept="image/jpeg,image/png,image/gif,image/webp" required>
+                </div>
+                <button class="upload-button" type="submit">Upload image</button>
+            </form>
+        </div>
+        <p class="image-help">JPG and PNG are automatically resized to 1920px. Maximum upload: 100 MB.</p>
+    </section>
+
+    <form method="post" action="/admin/project/add">
+        <button class="upload-button" type="submit">+ Add project</button>
+    </form>
+
+    <form method="post" action="/admin/content">
+        <section>
+            <h2>Homepage</h2>
+            <div class="grid">
+                <label>Website / brand name<input name="site.name" th:value="${site['site.name']}" required></label>
+                <label>Availability status<input name="home.status" th:value="${site['home.status']}"></label>
+                <label class="full">Main headline<input name="home.headline" th:value="${site['home.headline']}" required></label>
+                <label class="full">Introduction<textarea name="home.intro" th:text="${site['home.intro']}"></textarea></label>
+                <label class="full">Hero image URL<input name="home.image" th:value="${site['home.image']}"></label>
+            </div>
+        </section>
+
+        <section>
+            <h2>About</h2>
+            <div class="grid">
+                <label class="full">First paragraph<textarea name="about.bio1" th:text="${site['about.bio1']}"></textarea></label>
+                <label class="full">Second paragraph<textarea name="about.bio2" th:text="${site['about.bio2']}"></textarea></label>
+                <label>Location<input name="about.location" th:value="${site['about.location']}"></label>
+                <label>Availability<input name="about.availability" th:value="${site['about.availability']}"></label>
+                <label>Experience<input name="about.experience" th:value="${site['about.experience']}"></label>
+            </div>
+        </section>
+
+        <section>
+            <h2>Services</h2>
+            <div class="grid">
+                <th:block th:each="number : ${#numbers.sequence(1, 6)}">
+                    <label><span th:text="|Service ${number} title|"></span><input th:name="|service.${number}.title|" th:value="${site['service.' + number + '.title']}"></label>
+                    <label><span th:text="|Service ${number} description|"></span><textarea th:name="|service.${number}.description|" th:text="${site['service.' + number + '.description']}"></textarea></label>
+                </th:block>
+                <label class="full">Tools and technologies (comma-separated)<textarea name="services.stack" th:text="${site['services.stack']}"></textarea></label>
+            </div>
+        </section>
+
+        <section>
+            <h2>Projects</h2>
+            <div th:each="number : ${projectNumbers}">
+                <h3 th:text="|Project ${number}|"></h3>
+                <div class="grid">
+                    <label>Title<input th:name="|project.${number}.title|" th:value="${site['project.' + number + '.title']}"></label>
+                    <label>Technologies (comma-separated)<input th:name="|project.${number}.tags|" th:value="${site['project.' + number + '.tags']}"></label>
+                    <label class="full">Description<textarea th:name="|project.${number}.description|" th:text="${site['project.' + number + '.description']}"></textarea></label>
+                    <label class="full">Image URL<input th:name="|project.${number}.image|" th:value="${site['project.' + number + '.image']}"></label>
+                </div>
+            </div>
+            <div class="grid"><label class="full">Projects page note<textarea name="projects.note" th:text="${site['projects.note']}"></textarea></label></div>
+        </section>
+
+        <section>
+            <h2>Contact</h2>
+            <div class="grid">
+                <label class="full">Heading<input name="contact.heading" th:value="${site['contact.heading']}"></label>
+                <label class="full">Introduction<textarea name="contact.intro" th:text="${site['contact.intro']}"></textarea></label>
+                <label>Email address<input name="contact.email" type="email" th:value="${site['contact.email']}"></label>
+                <label>LinkedIn URL<input name="contact.linkedin" type="url" th:value="${site['contact.linkedin']}"></label>
+            </div>
+        </section>
+
+        <div class="save-bar"><button class="save" type="submit">Save and publish</button></div>
+    </form>
+</main>
+</body>
+</html>
