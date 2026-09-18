@@ -238,6 +238,17 @@ sudo systemctl status mysql
 Also verify that `DB_URL`, `DB_USERNAME`, and `DB_PASSWORD` match the MySQL
 server you started.
 
+If the error says `Access denied for user 'portfolio'@'localhost'`, your local
+MySQL account has an older password. With MySQL running, reset the development
+account using:
+
+```bash
+sudo mysql < database/setup.sql
+```
+
+Then restart the application. The local development username and password are
+both `portfolio`.
+
 ### Port 8080 is already in use
 
 Stop the other application using port 8080, or start this application on a
