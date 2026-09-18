@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: olayinka-portfolio
+    runtime: docker
+    region: frankfurt
+    plan: 1c-2g
+    healthCheckPath: /
+    disk:
+      name: uploaded-images
+      mountPath: /app/data/uploads
+      sizeGB: 1
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://portfolio-mysql:3306/portfolio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - key: DB_USERNAME
+        value: portfolio
+      - key: SITE_UPLOAD_DIR
+        value: /app/data/uploads
+      - key: ADMIN_PASSWORD
+        sync: false
+      - fromGroup: portfolio-mysql-credentials
+
+  - type: pserv
+    name: portfolio-mysql
+    runtime: docker
+    region: frankfurt
+    plan: 1c-2g
+    dockerfilePath: ./database/Dockerfile
+    dockerContext: .
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+    envVars:
+      - fromGroup: portfolio-mysql-credentials
+
+envVarGroups:
+  - name: portfolio-mysql-credentials
+    envVars:
+      - key: MYSQL_DATABASE
+        value: portfolio
+      - key: MYSQL_USER
+        value: portfolio
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
